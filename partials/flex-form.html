@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="FlexFromApp">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="lib/angular.min.js"></script>
+	<script src="lib/angular-route.min.js"></script>
+	<script src="lib/angular-resource.min.js"></script>
+	<script>
+		var app = angular.module('FlexFromApp',[]);
+		app.directive('flexForm2',['$compile',function($compile){
+			return {
+				restrict: 'E',
+				transclude: true,
+				template: '<label for="{{id}}" class="{{class}}" ng-transclude><span>{{infoMessage}}</span></label>',
+			}
+		}]);
+		app.directive('flexForm',['$compile',function($compile){
+			return {
+				restrict: 'E',
+				compile: function compile(tElement, tAttrs, transclude) {
+				        return {
+				          pre: function preLink(scope, iElement, iAttrs, controller) {
+				          	var labelClasses = [], iAttrs.maxlength = iAttrs.maxlength || 100;
+				          	scope.id = 'seth';
+				          	if(!iAttrs.type) scope.type = 'text';
+				          	var build = '<label for="{{id}}"';
+				          	if(iAttrs['class']) labelClasses.push(iAttrs['class']);
+
+				          	if(iAttrs.type){
+					          	switch(iAttrs.type.toLowerCase()){
+					          		case 'date':
+					          			needsStyling = true;
+					          			break;
+				          			case 'creditcard':
+					          			needsStyling = true;
+					          			specialType = true;
+					          			iAttrs.maxlength = 16;
+					          			break;
+				          			case 'tel': 
+					          			iAttrs.maxlength = 10;
+				          				break;
+					          	}
+					          	if(needsStyling){
+					          		labelClasses.push('type-'+iAttrs.type.toLowerCase());
+					          	}
+					          	if(specialType){
+					          		iAttrs.type = 'text';
+					          	}
+				          	}
+
+				          	if(labelClasses.length){
+				          		build += ' class="';
+				          		angular.forEach(labelClasses,function(cls,i){
+				          			if(i) build += ' ';
+				          			build += cls;
+				          		});
+				          		build += '"';
+				          	}
+				          	build += '>';
+				          	build += '<input id="{{id}}"';
+				            angular.forEach(iAttrs,function(i,v){
+				            	if(i && v && v.charAt(0)!= '$' && i != 'class'){
+				            		console.log(i,v);
+				            		scope[v+'Var'] = i;
+				            		build += ' '+v.replace(/([a-z])([A-Z])/g,'$1-$2').toLowerCase();
+				            		if(true || v.substr(0,2)=='ng'){
+				            			build += '="'+i+'"';
+				            		}
+				            		else {
+				            			build += '="{{'+v+'Var}}"';
+				            		}
+				            	}
+				            });
+				           	build += '></label>';
+				           	console.log(build);
+				            iElement.replaceWith($compile(build)(scope));
+				          },
+				          post: function postLink(scope, iElement, iAttrs, controller) {
+				            // console.log('post',arguments);
+				            // var build = '<span ng-click="id = \'seth\'">Seth is awesome {{id}}'+iAttrs.id+'</span>';
+				            // iElement.replaceWith(build);
+				          }
+				        }
+				        // or
+				        // return function postLink( ... ) { ... }
+				      }
+			}
+		}]);
+	</script>
+</head>
+<body>
+
+<flex-form type="date" ng-click="blah = true"></flex-form>
+<flex-form2>
+	<input id="seth" class="yay" infoMessage="woot" ng-click="blah = true">
+</flex-form2>
+	
+</body>
+</html>
