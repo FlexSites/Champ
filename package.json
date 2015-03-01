@@ -1,0 +1,23 @@
+{
+  "name": "SDK",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-header": "^1.2.2",
+    "gulp-footer": "^1.0.5",
+    "gulp-uglify": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:omniorders/sdk.git"
+  },
+  "author": "Seth Tippetts <sethtippetts@gmail.com> (http://sethtippetts.com)",
+  "license": "ISC"
+}

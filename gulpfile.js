@@ -23,7 +23,7 @@ gulp.task('build', function(){
     .pipe(header('(function(window, angular, undefined) {"use strict";'))
     .pipe(footer('})(window, window.angular);'))
     .pipe(uglify())
-    .pipe(gulp.dest('/www/sites/entnr/public/ng'));
+    .pipe(gulp.dest('../global/public/ng/'));
 });
 
 gulp.task('default', function(){
