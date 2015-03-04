@@ -1,47 +1,39 @@
-  var urlBase = "http://localapi.flexhub.io";
-  var authHeader = "authorization";
-  var module = angular.module("FlexSite")
-    .factory("User", ["FlexSiteResource", "FlexSiteAuth", "$injector", function(Resource, FlexSiteAuth, $injector) {
-      var R = Resource(urlBase + "/users/:id", {"id": "@id"}, {
-        "create": {url: urlBase + "/users", method: "POST"},
-        "upsert": {url: urlBase + "/users", method: "PUT"},
-        "exists": {url: urlBase + "/users/:id/exists", method: "GET"},
-        "findById": {url: urlBase + "/users/:id", method: "GET"},
-        "find": {isArray: true, url: urlBase + "/users", method: "GET"},
-        "findOne": {url: urlBase + "/users/findOne", method: "GET"},
-        "count": {url: urlBase + "/users/count", method: "GET"},
-        "update": {url: urlBase + "/users/:id", method: "PUT"},
-        "login": {
-          params: {include: "user"},
+  var apiBase = 'http://localapi.flexhub.io';
+  var authHeader = 'authorization';
+  var module = angular.module('FlexSite')
+    .factory('User', ['FlexSiteResource', 'FlexSiteAuth', 'apiBase', function(Resource, FlexSiteAuth, apiBase) {
+      var R = Resource('User', {
+        'login': {
+          params: {include: 'user'},
           interceptor: {
             response: function(response) {
               var accessToken = response.data;
               FlexSiteAuth.setUser(accessToken.id, accessToken.userId, accessToken.user);
               FlexSiteAuth.rememberMe = response.config.params.rememberMe !== false;
               FlexSiteAuth.save();
-              return response.resource
+              return response.resource;
             }
-          }, url: urlBase + "/users/login", method: "POST"
+          }, url: apiBase + '/users/login', method: 'POST'
         },
-        "logout": {
+        'logout': {
           interceptor: {
             response: function(response) {
               FlexSiteAuth.clearUser();
               FlexSiteAuth.clearStorage();
               return response.resource
             }
-          }, url: urlBase + "/users/logout", method: "POST"
+          }, url: apiBase + '/users/logout', method: 'POST'
         },
-        "confirm": {
-          url: urlBase + "/users/confirm",
-          method: "GET"
+        'confirm': {
+          url: apiBase + '/users/confirm',
+          method: 'GET'
         },
-        "resetPassword": {url: urlBase + "/users/reset", method: "POST"},
-        "getCurrent": {
-          url: urlBase + "/users" + "/:id", method: "GET", params: {
+        'resetPassword': {url: apiBase + '/users/reset', method: 'POST'},
+        'getCurrent': {
+          url: apiBase + '/users' + '/:id', method: 'GET', params: {
             id: function() {
               var id = FlexSiteAuth.currentUserId;
-              if (id == null)id = "__anonymous__";
+              if (id == null)id = '__anonymous__';
               return id
             }
           }, interceptor: {
@@ -52,8 +44,8 @@
           }, __isGetCurrentUser__: true
         }
       });
-      R["updateOrCreate"] = R["upsert"];
-      R["update"] = R["updateAll"];
+      R['updateOrCreate'] = R['upsert'];
+      R['update'] = R['updateAll'];
       R.getCachedCurrent =
         function() {
           var data = FlexSiteAuth.currentUserData;
@@ -65,12 +57,12 @@
       R.getCurrentId = function() {
         return FlexSiteAuth.currentUserId
       };
-      R.modelName = "User";
+      R.modelName = 'User';
       return R
     }])
-    .factory("FlexSiteAuth", function() {
-      var props = ["accessTokenId", "currentUserId"];
-      var propsPrefix = "$FlexSite$";
+    .factory('FlexSiteAuth', function() {
+      var props = ['accessTokenId', 'currentUserId'];
+      var propsPrefix = '$FlexSite$';
 
       function FlexSiteAuth() {
         var self = this;
@@ -107,7 +99,7 @@
       return new FlexSiteAuth;
       function save(storage, name, value) {
         var key = propsPrefix + name;
-        if (value == null)value = "";
+        if (value == null)value = '';
         storage[key] = value
       }
 
@@ -115,6 +107,6 @@
         var key = propsPrefix + name;
         return localStorage[key] || sessionStorage[key] || null
       }
-    }).config(["$httpProvider", function($httpProvider) {
-      $httpProvider.interceptors.push("FlexSiteAuthRequestInterceptor")
+    }).config(['$httpProvider', function($httpProvider) {
+      $httpProvider.interceptors.push('FlexSiteAuthRequestInterceptor')
     }])
