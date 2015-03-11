@@ -29,7 +29,7 @@ app.provider('FlexSiteResource', function FlexSiteResourceProvider() {
         resource['update'] = resource['updateAll'];
         resource['destroyById'] = resource['deleteById'];
         resource['removeById'] = resource['deleteById'];
-        resource.modelName = 'Page';
+        resource.modelName = name;
 
         // Override prototype.$save
         resource.prototype.$save = function(success, error) {
