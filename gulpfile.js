@@ -42,7 +42,7 @@ gulp.task('build', function(){
     // .pipe(header('(function(window, angular, undefined) {"use strict";'))
     // .pipe(footer('})(window, window.angular);'))
     // .pipe(uglify())
-    .pipe(gulp.dest('../global/ng/'));
+    .pipe(gulp.dest('../sites/brick/public/ng'));
 });
 
 gulp.task('default', function(){
