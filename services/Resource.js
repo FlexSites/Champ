@@ -1,5 +1,5 @@
-
-app.provider('FlexSiteResource', function FlexSiteResourceProvider() {
+angular.module('FlexSite')
+  .provider('FlexSiteResource', function FlexSiteResourceProvider() {
     this.$get = ['$resource', 'apiBase', function($resource, apiBase) {
       return function(name, actions) {
         var url = '/'+name.toLowerCase() + 's'
@@ -21,14 +21,14 @@ app.provider('FlexSiteResource', function FlexSiteResourceProvider() {
         angular.forEach(actions, function(action){
             action.url = action.url?urlBase + action.url:urlBase;
         });
-        console.log('Actions!', actions);
+
         var resource = $resource(urlBase + '/:id', params, actions);
 
         // Method aliases
-        resource['updateOrCreate'] = resource['upsert'];
-        resource['update'] = resource['updateAll'];
-        resource['destroyById'] = resource['deleteById'];
-        resource['removeById'] = resource['deleteById'];
+        resource.updateOrCreate = resource.upsert;
+        resource.update = resource.updateAll;
+        resource.destroyById = resource.deleteById;
+        resource.removeById = resource.deleteById;
         resource.modelName = name;
 
         // Override prototype.$save
