@@ -13,7 +13,7 @@
               FlexSiteAuth.save();
               return response.resource;
             }
-          }, url: apiBase + '/users/login', method: 'POST'
+          }, url: '/login', method: 'POST'
         },
         'logout': {
           interceptor: {
@@ -22,7 +22,7 @@
               FlexSiteAuth.clearStorage();
               return response.resource
             }
-          }, url: apiBase + '/users/logout', method: 'POST'
+          }, url:'/logout', method: 'POST'
         },
         'confirm': {
           url: apiBase + '/users/confirm',
@@ -33,32 +33,32 @@
           url: apiBase + '/users' + '/:id', method: 'GET', params: {
             id: function() {
               var id = FlexSiteAuth.currentUserId;
-              if (id == null)id = '__anonymous__';
-              return id
+              if (id === null)id = '__anonymous__';
+              return id;
             }
           }, interceptor: {
             response: function(response) {
               FlexSiteAuth.currentUserData = response.data;
-              return response.resource
+              return response.resource;
             }
           }, __isGetCurrentUser__: true
         }
       });
-      R['updateOrCreate'] = R['upsert'];
-      R['update'] = R['updateAll'];
+      R.updateOrCreate = R.upsert;
+      R.update = R.updateAll;
       R.getCachedCurrent =
         function() {
           var data = FlexSiteAuth.currentUserData;
-          return data ? new R(data) : null
+          return data ? new R(data) : null;
         };
       R.isAuthenticated = function() {
-        return this.getCurrentId() != null
+        return this.getCurrentId() !== null;
       };
       R.getCurrentId = function() {
-        return FlexSiteAuth.currentUserId
+        return FlexSiteAuth.currentUserId;
       };
       R.modelName = 'User';
-      return R
+      return R;
     }])
     .factory('FlexSiteAuth', function() {
       var props = ['accessTokenId', 'currentUserId'];
@@ -67,46 +67,46 @@
       function FlexSiteAuth() {
         var self = this;
         props.forEach(function(name) {
-          self[name] = load(name)
+          self[name] = load(name);
         });
         this.rememberMe = undefined;
-        this.currentUserData = null
+        this.currentUserData = null;
       }
 
       FlexSiteAuth.prototype.save = function() {
         var self = this;
         var storage = this.rememberMe ? localStorage : sessionStorage;
         props.forEach(function(name) {
-          save(storage, name, self[name])
-        })
+          save(storage, name, self[name]);
+        });
       };
       FlexSiteAuth.prototype.setUser = function(accessTokenId, userId, userData) {
         this.accessTokenId = accessTokenId;
         this.currentUserId = userId;
-        this.currentUserData = userData
+        this.currentUserData = userData;
       };
       FlexSiteAuth.prototype.clearUser = function() {
         this.accessTokenId = null;
         this.currentUserId = null;
-        this.currentUserData = null
+        this.currentUserData = null;
       };
       FlexSiteAuth.prototype.clearStorage = function() {
         props.forEach(function(name) {
           save(sessionStorage, name, null);
-          save(localStorage, name, null)
-        })
+          save(localStorage, name, null);
+        });
       };
       return new FlexSiteAuth;
       function save(storage, name, value) {
         var key = propsPrefix + name;
-        if (value == null)value = '';
-        storage[key] = value
+        if (value === null)value = '';
+        storage[key] = value;
       }
 
       function load(name) {
         var key = propsPrefix + name;
-        return localStorage[key] || sessionStorage[key] || null
+        return localStorage[key] || sessionStorage[key] || null;
       }
     }).config(['$httpProvider', function($httpProvider) {
-      $httpProvider.interceptors.push('FlexSiteAuthRequestInterceptor')
-    }])
+      $httpProvider.interceptors.push('FlexSiteAuthRequestInterceptor');
+    }]);
