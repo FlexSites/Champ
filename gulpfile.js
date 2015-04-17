@@ -1,27 +1,27 @@
 var gulp = require('gulp')
-  , hogan = require('../auto/gulp-hogan')
+  , hogan = require('../auto/gulp/gulp-hogan')
   , concat = require('gulp-concat')
   , uglify = require('gulp-uglify')
   , header = require('gulp-header')
   , footer = require('gulp-footer');
 
-var path = require('path');
+var path = require('path')
+  , glob = require('glob')
+  , Flex = require('../auto/gulp/gulp-resource');
 
-var glob = require('glob');
-
-
-gulp.task('build', function(){
   var buildFiles = [
     'module.js',
-    'controllers/*.js', 
+    'controllers/*.js',
     'directives/*.js',
-    'services/*.js' 
+    'services/*.js'
   ];
+  var allResources = ['user','page','site','subscriber','medium','order','event','entertainer','ticket','section','venue'];
 
+gulp.task('build', function(){
+  var env = Flex.getEnv();
+  if(env === 'prod') env = '';
 
-  var allResources = ['user','page','site','subscriber','order','event','entertainer','ticket','section','venue'];
-
-  var customResources = glob.sync('resources/*.js').map(function(resource){
+  glob.sync('resources/*.js').map(function(resource){
     var idx = allResources.indexOf(path.basename(resource,'.js').toLowerCase());
     if(~idx){
       console.log('removed', resource);
@@ -29,22 +29,21 @@ gulp.task('build', function(){
     }
     buildFiles.push(resource);
   });
-    console.log('build files', buildFiles, allResources);
   gulp.src(buildFiles)
-    .pipe(concat('sdk.js')) 
-    .pipe(hogan({ 
+    .pipe(concat('sdk.js'))
+    .pipe(hogan({
       delimiters: '<< >>',
       data: {
-        env: 'local',
+        env: env,
         resources: JSON.stringify(allResources)
       }
     }))
     // .pipe(header('(function(window, angular, undefined) {"use strict";'))
     // .pipe(footer('})(window, window.angular);'))
     // .pipe(uglify())
-    .pipe(gulp.dest('../sites/brick/public/ng'));
+    .pipe(gulp.dest('../sites/flexsites.io/public/ng'));
 });
 
 gulp.task('default', function(){
   gulp.watch(['**/*.js','!build/*.js','!gulpfile.js'], ['build']);
-})
+});

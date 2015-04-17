@@ -2,7 +2,7 @@ angular.module('FlexSite')
   .provider('FlexSiteResource', function FlexSiteResourceProvider() {
     this.$get = ['$resource', 'apiBase', function($resource, apiBase) {
       return function(name, actions) {
-        var url = '/'+name.toLowerCase() + 's'
+        var url = '/'+pluralize(name.toLowerCase())
           , urlBase = apiBase + url
           , params = {id: '@id'};
 
@@ -30,6 +30,7 @@ angular.module('FlexSite')
         resource.destroyById = resource.deleteById;
         resource.removeById = resource.deleteById;
         resource.modelName = name;
+        resource.prototype.modelName = name;
 
         // Override prototype.$save
         resource.prototype.$save = function(success, error) {
@@ -40,3 +41,12 @@ angular.module('FlexSite')
       };
     }];
   });
+
+function pluralize(str) {
+  if (str.slice(-3) == "ium") {
+    str = str.substr(0, str.length - 3) + "ia";
+  } else {
+    str += "s";
+  }
+  return str;
+}

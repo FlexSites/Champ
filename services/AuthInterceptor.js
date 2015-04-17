@@ -1,11 +1,10 @@
 
 angular.module('FlexSite')
-  .factory('FlexSiteAuthRequestInterceptor', ['$q', 'FlexSiteAuth', 'apiBase', function($q, FlexSiteAuth, apiBase) {
+  .factory('FlexSiteAuthRequestInterceptor', ['$q', 'FlexSiteAuth', 'apiBase', 'authHeader', function($q, FlexSiteAuth, apiBase, authHeader) {
     return {
       'request': function(config) {
         if (config.url.substr(0, apiBase.length) !== apiBase) return config;
-        if (FlexSiteAuth.accessTokenId) config.headers[authHeader] =
-          FlexSiteAuth.accessTokenId;
+        if (FlexSiteAuth.accessTokenId) config.headers[authHeader] = FlexSiteAuth.accessTokenId;
         else if (config.__isGetCurrentUser__) {
           var res = {
             body: {
