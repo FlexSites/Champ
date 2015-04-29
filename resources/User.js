@@ -20,17 +20,17 @@
             response: function(response) {
               FlexSiteAuth.clearUser();
               FlexSiteAuth.clearStorage();
-              return response.resource
+              return response.resource;
             }
           }, url:'/logout', method: 'POST'
         },
         'confirm': {
-          url: apiBase + '/users/confirm',
+          url: '/confirm',
           method: 'GET'
         },
-        'resetPassword': {url: apiBase + '/users/reset', method: 'POST'},
+        'resetPassword': {url: '/reset', method: 'POST'},
         'getCurrent': {
-          url: apiBase + '/users' + '/:id', method: 'GET', params: {
+          url: '/:id', method: 'GET', params: {
             id: function() {
               var id = FlexSiteAuth.currentUserId;
               if (id === null)id = '__anonymous__';
@@ -44,6 +44,8 @@
           }, __isGetCurrentUser__: true
         }
       });
+      R.signIn = R.login;
+      R.signOut = R.logout;
       R.updateOrCreate = R.upsert;
       R.update = R.updateAll;
       R.getCachedCurrent =
