@@ -1,6 +1,4 @@
-  var apiBase = 'http://localapi.flexhub.io';
-  var authHeader = 'authorization';
-  var module = angular.module('FlexSite')
+angular.module('FlexSite')
     .factory('User', ['FlexSiteResource', 'FlexSiteAuth', 'apiBase', function(Resource, FlexSiteAuth, apiBase) {
       var R = Resource('User', {
         'login': {
@@ -28,6 +26,25 @@
           url: '/confirm',
           method: 'GET'
         },
+        'sites': {
+          url: '/:id/sites',
+          method: 'GET',
+          isArray: true,
+          interceptor: {
+            response: function(response) {
+              console.log(response);
+              FlexSiteAuth.currentUserData = response.data;
+              return response.resource;
+            }
+          },
+          params: {
+            id: function() {
+              var id = FlexSiteAuth.currentUserId;
+              if (id === null)id = '__anonymous__';
+              return id;
+            }
+          }
+        },
         'resetPassword': {url: '/reset', method: 'POST'},
         'getCurrent': {
           url: '/:id', method: 'GET', params: {
@@ -44,6 +61,7 @@
           }, __isGetCurrentUser__: true
         }
       });
+
       R.signIn = R.login;
       R.signOut = R.logout;
       R.updateOrCreate = R.upsert;

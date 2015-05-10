@@ -1,5 +1,5 @@
 (function(window, angular, undefined) {
-	var urlBase = "http://localapi.flexhub.io";
+	var urlBase = "http://localapi.flexsites.io";
 	var authHeader = "authorization";
 	var module = angular.module("loopback", ["ngResource"]);
 	module.factory("User", ["LoopBackResource", "LoopBackAuth", "$injector", function(Resource, LoopBackAuth, $injector) {

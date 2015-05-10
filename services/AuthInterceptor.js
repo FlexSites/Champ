@@ -23,4 +23,4 @@ angular.module('FlexSite')
         return config || $q.when(config);
       }
     };
-  }])
+  }]);

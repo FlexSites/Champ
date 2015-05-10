@@ -58,7 +58,7 @@ angular.module('app', ['ngResource', 'ngRoute'])
                 var val = scope.$eval(attrs[plural]) || $routeParams[singular] || ($location.path().substr(1) === singular?'new':{});
                 scope[singular] = {};
                 scope[plural] = [];
-                
+
                 if(typeof val === 'string'){
                     if(val === 'new'){
                         scope[singular] = scope.add();
@@ -70,7 +70,7 @@ angular.module('app', ['ngResource', 'ngRoute'])
                 }
                 if(val){
                     var type = typeof val === 'object' && val.id?'get':'query';
-                    
+
                     if(singular !== 'site') val.site = $window.localStorage.currentSite;
                     if(singular === 'section') val.venue = $window.localStorage.currentVenue;
 
@@ -90,7 +90,7 @@ angular.module('app', ['ngResource', 'ngRoute'])
                         }
                     });
                 }
-                
+
                 scope.save = function(item, isUpdate) {
                     item = item || scope[singular];
                     if(!item instanceof Resource){
@@ -145,7 +145,7 @@ angular.module('app', ['ngResource', 'ngRoute'])
             return col;
         }
     }])
-    
+
 
 
     // Helper functions
@@ -201,7 +201,7 @@ _.each(<<&resources>>, function(resource){
                 path = '/sites/:site' + path;
                 params.site = '@site';
             }
-            return $resource('http://<<env>>api.flexhub.io'+path, params);
+            return $resource('http://<<env>>api.flexsites.io'+path, params);
         }]);
         if(resource !== 'site'){
             angular.module('app')
@@ -212,7 +212,7 @@ _.each(<<&resources>>, function(resource){
                         link: {
                             pre: function(scope, element, attrs) {
                                 console.log(resource, 'run directive');
-                                GenericDirective.create(resource, scope, attrs); 
+                                GenericDirective.create(resource, scope, attrs);
                                 console.log(resource, 'finish directive');
                             }
                         }
