@@ -15,7 +15,7 @@ var path = require('path')
     'directives/*.js',
     'services/*.js'
   ];
-  var allResources = ['user','page','post','site','contactMessage','testimonial','subscriber','medium','order','event','entertainer','ticket','section','venue'];
+  var allResources = ['user','page','post','site','contactMessage','testimonial','subscriber','showtime','medium','order','event','entertainer','ticket','section','venue'];
 
 gulp.task('build', function(){
   var env = Flex.getEnv();
