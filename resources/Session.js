@@ -1,43 +1,51 @@
 angular.module('FlexSite')
-    .factory('User', ['FlexSiteResource', 'FlexSiteAuth', 'apiBase', function(Resource, FlexSiteAuth, apiBase) {
-      var R = Resource('User', {
-        'resetPassword': {url: '/reset', method: 'POST'},
-        'getCurrent': {
-          url: '/:id', method: 'GET', params: {
-            id: function() {
-              var id = FlexSiteAuth.currentUserId;
-              if (id === null)id = '__anonymous__';
-              return id;
-            }
-          }, interceptor: {
+    .factory('Session', ['FlexSiteResource', 'FlexSiteAuth', 'apiBase', function(Resource, FlexSiteAuth, apiBase) {
+      var R = Resource('Session', {
+        'create': {
+          params: {include: 'session'},
+          interceptor: {
             response: function(response) {
-              FlexSiteAuth.currentUserData = response.data;
+              var accessToken = response.data;
+              FlexSiteAuth.setUser(accessToken.id, accessToken.sessionId, accessToken.session);
+              FlexSiteAuth.rememberMe = response.config.params.rememberMe !== false;
+              FlexSiteAuth.save();
               return response.resource;
             }
-          }, __isGetCurrentUser__: true
+          }, url: '/', method: 'POST'
+        },
+        'deleteById': {
+          interceptor: {
+            response: function(response) {
+              FlexSiteAuth.clearSession();
+              FlexSiteAuth.clearStorage();
+              return response.resource;
+            }
+          }, url:'/', method: 'DELETE'
+        },
+        'confirm': {
+          url: '/confirm',
+          method: 'GET'
         }
       });
 
-      R.signIn = R.login;
-      R.signOut = R.logout;
-      R.updateOrCreate = R.upsert;
-      R.update = R.updateAll;
+      R.signIn = R.create;
+      R.signOut = R.destroyById;
       R.getCachedCurrent =
         function() {
-          var data = FlexSiteAuth.currentUserData;
+          var data = FlexSiteAuth.currentSessionData;
           return data ? new R(data) : null;
         };
       R.isAuthenticated = function() {
         return this.getCurrentId() !== null;
       };
       R.getCurrentId = function() {
-        return FlexSiteAuth.currentUserId;
+        return FlexSiteAuth.currentSessionId;
       };
-      R.modelName = 'User';
+      R.modelName = 'Session';
       return R;
     }])
     .factory('FlexSiteAuth', function() {
-      var props = ['accessTokenId', 'currentUserId'];
+      var props = ['accessTokenId', 'currentSessionId'];
       var propsPrefix = '$FlexSite$';
 
       function FlexSiteAuth() {
@@ -46,7 +54,7 @@ angular.module('FlexSite')
           self[name] = load(name);
         });
         this.rememberMe = undefined;
-        this.currentUserData = null;
+        this.currentSessionData = null;
       }
 
       FlexSiteAuth.prototype.save = function() {
@@ -56,15 +64,15 @@ angular.module('FlexSite')
           save(storage, name, self[name]);
         });
       };
-      FlexSiteAuth.prototype.setUser = function(accessTokenId, userId, userData) {
+      FlexSiteAuth.prototype.setUser = function(accessTokenId, sessionId, sessionData) {
         this.accessTokenId = accessTokenId;
-        this.currentUserId = userId;
-        this.currentUserData = userData;
+        this.currentSessionId = sessionId;
+        this.currentSessionData = sessionData;
       };
-      FlexSiteAuth.prototype.clearUser = function() {
+      FlexSiteAuth.prototype.clearSession = function() {
         this.accessTokenId = null;
-        this.currentUserId = null;
-        this.currentUserData = null;
+        this.currentSessionId = null;
+        this.currentSessionData = null;
       };
       FlexSiteAuth.prototype.clearStorage = function() {
         props.forEach(function(name) {

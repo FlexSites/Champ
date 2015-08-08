@@ -1,5 +1,5 @@
 var app = angular.module('FlexSite', ['ngResource'])
-  .value('apiBase', 'http://<<env>>api.flexsites.io')
+  .value('apiBase', '/api/v1')
   .value('authHeader', 'authorization')
   .config(['$sceDelegateProvider', function($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist([

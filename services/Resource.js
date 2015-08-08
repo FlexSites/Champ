@@ -2,7 +2,7 @@ angular.module('FlexSite')
   .provider('FlexSiteResource', function FlexSiteResourceProvider() {
     this.$get = ['$resource', 'apiBase', function($resource, apiBase) {
       return function(name, actions) {
-        var url = '/'+pluralize(name.toLowerCase())
+        var url = '/'+camelToSnake(pluralize(name))
           , urlBase = apiBase + url
           , params = {id: '@id'};
 
@@ -19,7 +19,8 @@ angular.module('FlexSite')
           prototype$updateAttributes: {url: '/:id', method: 'PUT'}
         }, actions);
         angular.forEach(actions, function(action){
-            action.url = action.url?urlBase + action.url:urlBase;
+          action.url = action.url ? urlBase + action.url : urlBase;
+          action.withCredentials = true;
         });
 
         var resource = $resource(urlBase + '/:id', params, actions);
@@ -43,10 +44,16 @@ angular.module('FlexSite')
   });
 
 function pluralize(str) {
-  if (str.slice(-3) == "ium") {
-    str = str.substr(0, str.length - 3) + "ia";
+  if (str.slice(-3) === 'ium') {
+    str = str.substr(0, str.length - 3) + 'ia';
   } else {
-    str += "s";
+    str += 's';
   }
   return str;
+}
+
+function camelToSnake(str) {
+  return str.replace(/([A-Z])/g, function($1){
+    return '-' + $1.toLowerCase();
+  }).substr(1);
 }
