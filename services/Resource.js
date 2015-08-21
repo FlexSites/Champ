@@ -8,7 +8,7 @@ angular.module('FlexSite')
 
         actions = angular.extend({}, {
           create: {method: 'POST'},
-          upsert: {method: 'PUT'},
+          upsert: {url: '/:id', method: 'PUT'},
           exists: {url: '/:id/exists', method: 'GET'},
           findById: {url: '/:id', method: 'GET'},
           find: {isArray: true, method: 'GET'},
