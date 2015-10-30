@@ -1,5 +1,5 @@
 
-// angular.module('FlexSite')
+// app
 //   .factory('FlexSiteAuthRequestInterceptor', ['$q', 'FlexSiteAuth', 'apiBase', 'authHeader', function($q, FlexSiteAuth, apiBase, authHeader) {
 //     return {
 //       'request': function(config) {

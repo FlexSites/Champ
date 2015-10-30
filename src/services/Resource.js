@@ -1,8 +1,8 @@
-angular.module('FlexSite')
+angular.module('FlexSites')
   .provider('FlexSiteResource', function FlexSiteResourceProvider() {
     this.$get = ['$resource', 'apiBase', function($resource, apiBase) {
       return function(name, actions) {
-        var url = '/'+camelToSnake(pluralize(name))
+        var url = '/' + camelToSnake(pluralize(name))
           , urlBase = apiBase + url
           , params = {id: '@id'};
 
@@ -16,8 +16,8 @@ angular.module('FlexSite')
           updateAll: {url: '/update', method: 'POST'},
           deleteById: {url: '/:id', method: 'DELETE'},
           count: {url: '/count', method: 'GET'},
-          prototype$updateAttributes: {url: '/:id', method: 'PUT'}
         }, actions);
+
         angular.forEach(actions, function(action){
           action.url = action.url ? urlBase + action.url : urlBase;
           action.withCredentials = true;
