@@ -1,6 +1,6 @@
 {
   "name": "@flexsites/angular-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Client side Angular SDK for interacting with FlexSites API",
   "main": "lib/sdk.js",
   "dependencies": {},
