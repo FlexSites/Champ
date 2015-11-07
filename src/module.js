@@ -3,7 +3,7 @@ if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.ex
 }
 
 angular.module('FlexSites', ['ngResource'])
-  .value('apiBase', '/api/v1')
+  .value('apiBase', 'https://api.flexsites.io/api/v1')
   .value('authHeader', 'authorization')
   .config(['$sceDelegateProvider', function($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist([
