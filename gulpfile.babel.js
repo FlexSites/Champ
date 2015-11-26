@@ -18,13 +18,17 @@ let concat = concatLib('sdk.js')
 
 gulp.task('default', ['watch']);
 
-gulp.task('watch', () => {
+gulp.task('watch', ['build:dev'], () => {
+  return gulp.watch(src, ['build:dev']);
+});
+
+gulp.task('build:dev', () => {
   return gulp.src(src, { cwd })
     .pipe(es6)
     .pipe(concat)
     .pipe(gulp.dest(dest));
-});
-
+})
+;
 gulp.task('build', ['clean'], () => {
   return gulp.src(src, { cwd })
     .pipe(sourcemaps.init())
